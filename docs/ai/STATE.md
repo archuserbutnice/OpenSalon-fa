@@ -5,7 +5,7 @@
 | T01 | Repo cleanup & gitignore update | done | system | main | none | no | - |
 | T02 | Migration mechanism & baseline schema | done | system | main | T01 | no | 001, 002 |
 | T03 | Modular API route refactoring | done | lead-agent | main | T02 | no | - |
-| T04 | i18n, RTL, Vazirmatn font, currency & phone normalization | claimed | lead-agent | main | T02 | no | - |
+| T04 | i18n, RTL, Vazirmatn font, currency & phone normalization | done | lead-agent | main | T02 | no | - |
 | T05 | Jalali calendar integration & formatting utils | todo | unassigned | main | T04 | no | - |
 | T06 | Minimal authentication (owner/staff roles & sessions) | todo | unassigned | main | T02 | no | 005 |
 | T07 | Smart Inventory DB schema & backend logic | todo | unassigned | main | T03, T06 | yes | 006 |
@@ -48,7 +48,7 @@ The baseline already contains partial work that later tasks must extend, not rec
 - `better-sqlite3` pinned to ^13 (prebuilt binaries for Node 26; v11 needs a C++ toolchain on Windows).
 
 ## Known Issues
-- `public/fonts/vazirmatn/*.woff2` are 43-byte placeholders; browsers reject them and fall back to system fonts. Real Vazirmatn (OFL) must be bundled in T04.
+- Authentic Vazirmatn fonts bundled in `public/fonts/vazirmatn/` (50KB WOFF2 files) and verified in T04.
 - `npm test` calls `python3`, which on Windows is often the Microsoft Store stub; use `python tests/runner.py` there.
 - `tsc` reports 6 errors, all from missing `@types/node` / `@types/better-sqlite3` (not installed; adding them needs approval).
 - Tests in `tests/` re-implement logic in Python and hit SQLite directly; they do not exercise the TypeScript services or HTTP routes.
