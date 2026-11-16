@@ -1,10 +1,13 @@
 # Handoff State
 
-- **Current Task**: T03 (Modular API route refactoring) — CLAIMED
+- **Current Task**: none active (T03 completed, ready for T04).
 - **What Is Done**:
   - Dev environment setup merged to `main` with runnable server & Vite dev proxies.
-  - Reconciled `STATE.md` with baseline schema & existing codebase.
-  - Claimed T03 to build and modularize core REST routes under `/api/...`.
+  - Completed **T03 (Modular API route refactoring)**:
+    - Modularized routes in `src/server/routes/` for `clients`, `staff`, `services`, `appointments`, `products`, `settings` (plus existing `inventory` and `sms`).
+    - Standardized REST patterns, query filters, joined appointment details, error handling, and Iranian phone normalization.
+    - Mounted all routers in `src/server/index.ts`.
+    - Tested and verified with `tests/test_t03_modular_routes.py` (21/21 suite tests passed).
 - **How to run**: `npm install`, then `npm run server` and `npm run dev` in two terminals; open http://localhost:5173.
-- **Next Step**: Implement modular API routers for `clients`, `staff`, `services`, `appointments`, `products`, `settings` in `src/server/routes/`, mount in `src/server/index.ts`, and test with verification suite.
+- **Next Step**: Start **T04** (i18n, RTL, Vazirmatn font, currency & phone normalization).
 - **Blockers**: None.
