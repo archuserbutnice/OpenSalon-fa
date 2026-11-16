@@ -3,6 +3,8 @@
 ## Current Status
 - Project: OpenSalon-fa (Persian-first Salon CRM)
 - Workspace: `/mnt/c/Users/infra-01/Desktop/Project/Open Salon CRM`
+- Remote Origin: `git@github.com:archuserbutnice/OpenSalon-fa.git` (synced to `origin/main`)
+- Remote Upstream: `https://github.com/clawnify/OpenSalon.git`
 - Active Task: None (T03 and T04 completed, ready for T05)
 - Previous Completed: T01 (Scaffolding), T02 (Persian Localization Core), T03 (Inventory Management), T04 (SMS Layer / Mediana)
 
