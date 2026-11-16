@@ -6,7 +6,7 @@
 | T02 | Migration mechanism & baseline schema | done | system | main | T01 | no | 001, 002 |
 | T03 | Modular API route refactoring | done | lead-agent | main | T02 | no | - |
 | T04 | i18n, RTL, Vazirmatn font, currency & phone normalization | done | lead-agent | main | T02 | no | - |
-| T05 | Jalali calendar integration & formatting utils | claimed | lead-agent | main | T04 | no | - |
+| T05 | Jalali calendar integration & formatting utils | done | lead-agent | main | T04 | no | - |
 | T06 | Minimal authentication (owner/staff roles & sessions) | todo | unassigned | main | T02 | no | 005 |
 | T07 | Smart Inventory DB schema & backend logic | todo | unassigned | main | T03, T06 | yes | 006 |
 | T08 | Smart Inventory UI & reorder suggestions | todo | unassigned | main | T07 | no | - |

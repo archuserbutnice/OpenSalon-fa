@@ -1,10 +1,17 @@
 # Handoff State
 
-- **Current Task**: T05 (Jalali calendar integration & formatting utils) — CLAIMED
+- **Current Task**: none active (T05 completed, ready for T06).
 - **What Is Done**:
   - Dev environment setup merged to `main` with runnable server & Vite dev proxies.
-  - Completed **T03 (Modular API route refactoring)** and **T04 (i18n, RTL, Vazirmatn font, currency & phone normalization)**.
-  - Claimed **T05** to build comprehensive Jalali calendar algorithms (leap years, month days, grid generation, string parsing, relative formatting) and interactive Jalali date picker component.
+  - Completed **T03 (Modular API route refactoring)**:
+    - Modularized routes in `src/server/routes/` for `clients`, `staff`, `services`, `appointments`, `products`, `settings` (plus `inventory` and `sms`).
+  - Completed **T04 (i18n, RTL, Vazirmatn font, currency & phone normalization)**:
+    - Bundled genuine Vazirmatn WOFF2 fonts (Regular, Medium, Bold: 50 KB each) in `public/fonts/vazirmatn/`.
+    - Formatted header and Jalali dates with Persian digits (`۰۱۲۳۴۵۶۷۸۹`).
+  - Completed **T05 (Jalali calendar integration & formatting utils)**:
+    - Implemented astronomical leap year calculations (`isJalaliLeapYear`), days per month, string parsing (`parseJalaliDate`), relative formatting (`formatJalaliRelative`), time slot generation, and month calendar grid.
+    - Built interactive mobile-first RTL `JalaliDatePicker` component in `src/client/components/JalaliDatePicker.tsx` and mounted in header navigation.
+    - Verified all algorithms with `tests/test_t05_jalali.py` (31/31 suite tests passed).
 - **How to run**: `npm install`, then `npm run server` and `npm run dev` in two terminals; open http://localhost:5173.
-- **Next Step**: Implement Jalali calendar extensions in `src/client/lib/jalali.ts`, create `src/client/components/JalaliDatePicker.tsx`, and add test suite `tests/test_t05_jalali.py`.
+- **Next Step**: Start **T06** (Minimal authentication: owner/staff roles & sessions, migration `005`).
 - **Blockers**: None.
