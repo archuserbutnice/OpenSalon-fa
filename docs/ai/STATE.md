@@ -5,7 +5,7 @@
 | T01 | Repo cleanup & gitignore update | done | system | main | none | no | - |
 | T02 | Migration mechanism & baseline schema | done | system | main | T01 | no | 001, 002 |
 | T03 | Modular API route refactoring | done | lead-agent | main | T02 | no | - |
-| T04 | i18n, RTL, Vazirmatn font, currency & phone normalization | todo | unassigned | main | T02 | no | - |
+| T04 | i18n, RTL, Vazirmatn font, currency & phone normalization | claimed | lead-agent | main | T02 | no | - |
 | T05 | Jalali calendar integration & formatting utils | todo | unassigned | main | T04 | no | - |
 | T06 | Minimal authentication (owner/staff roles & sessions) | todo | unassigned | main | T02 | no | 005 |
 | T07 | Smart Inventory DB schema & backend logic | todo | unassigned | main | T03, T06 | yes | 006 |
