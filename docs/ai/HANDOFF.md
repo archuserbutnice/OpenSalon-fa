@@ -1,6 +1,6 @@
 # Handoff State
 
-- **Current Task**: T13 (Smart Reports dashboard widgets & CSV export in `src/client/pages/reports.tsx`) - claimed.
+- **Current Task**: none active (T13 completed, ready for T14).
 - **What Is Done**:
   - Dev environment setup merged to `main` with runnable server & Vite dev proxies.
   - Completed **T03 (Modular API route refactoring)**.
@@ -13,8 +13,13 @@
   - Completed **T10 (Mediana SMS adapter implementation)**.
   - Completed **T11 (SMS delivery logs & dry-run toggle UI)**.
   - Completed **T12 (Smart Reports backend aggregation)**.
-- **In Progress**:
-  - Claimed **T13**: Building `src/client/pages/reports.tsx` with date-range filters, revenue by staff/service charts, busiest hours heatmap, VIP client rankings, and one-click UTF-8 BOM CSV export. Connecting to `src/client/app.tsx`.
+  - Completed **T13 (Smart Reports dashboard widgets & CSV export)**:
+    - Created comprehensive reports dashboard in `src/client/pages/reports.tsx` with date-range filters and presets (`today`, `week`, `month`, `quarter`, `all`).
+    - Added overview KPI cards: revenue in Toman, average ticket, completion/cancel/no-show rates, retention rate (new vs returning clients).
+    - Added interactive widgets: revenue by staff leaderboard, revenue by service ranking, busiest hours heatmap, VIP top clients list.
+    - Added one-click UTF-8 BOM CSV export action.
+    - Mounted in navigation and main content in `src/client/app.tsx`.
+    - Verified with `tests/test_t13_reports_ui.py` (all 76 tests pass).
 - **How to run**: `npm install`, then `npm run server` and `npm run dev` in two terminals; open http://localhost:5173.
-- **Next Step**: Create `reports.tsx`, add nav item to `app.tsx`, write `tests/test_t13_reports_ui.py`, and verify.
+- **Next Step**: Start **T14** (Customer profiles extension schema & backend, migration `008`).
 - **Blockers**: None.
