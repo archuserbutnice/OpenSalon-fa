@@ -9,6 +9,7 @@ import { inventoryRouter } from './routes/inventory';
 import { smsRouter } from './routes/sms';
 import { settingsRouter } from './routes/settings';
 import { authRouter } from './routes/auth';
+import { reportsRouter } from './routes/reports';
 
 const app = new Hono();
 
@@ -36,5 +37,6 @@ app.route('/api/inventory', inventoryRouter);
 app.route('/api/sms', smsRouter);
 app.route('/api/settings', settingsRouter);
 app.route('/api/auth', authRouter);
+app.route('/api/reports', reportsRouter);
 
 export default app;
