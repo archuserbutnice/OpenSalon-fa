@@ -15,8 +15,8 @@
     "hono": "^4.6.0",
     "preact": "^10.24.0",
     "preact-iso": "^2.6.0",
-    "lucide-preact": "^0.450.0",
-    "better-sqlite3": "^11.5.0",
+    "lucide-preact": "^0.451.0",
+    "better-sqlite3": "^13.2.0",
     "clsx": "^2.1.1",
     "tailwind-merge": "^2.5.4"
   },
