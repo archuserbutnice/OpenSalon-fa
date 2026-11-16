@@ -6,6 +6,7 @@ import { formatJalaliFullText } from './lib/jalali';
 import { JalaliDatePicker } from './components/JalaliDatePicker';
 import { InventoryPage } from './pages/inventory';
 import { SmsPage } from './pages/sms';
+import { ReportsPage } from './pages/reports';
 
 export function Navigation({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: (t: string) => void }) {
   const { t, settings, updateSettings, activeDate, setActiveDate } = useApp();
@@ -43,6 +44,14 @@ export function Navigation({ activeTab, setActiveTab }: { activeTab: string, set
               >
                 {t('nav.sms')}
               </button>
+              <button
+                onClick={() => setActiveTab('reports')}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition ${
+                  activeTab === 'reports' ? 'bg-pink-50 text-pink-700' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                📊 گزارشات مالی و آماری
+              </button>
             </nav>
           </div>
 
@@ -64,7 +73,7 @@ export function Navigation({ activeTab, setActiveTab }: { activeTab: string, set
 }
 
 export function AppContent() {
-  const [activeTab, setActiveTab] = useState<'calendar' | 'inventory' | 'sms'>('inventory');
+  const [activeTab, setActiveTab] = useState<'calendar' | 'inventory' | 'sms' | 'reports'>('inventory');
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
@@ -72,6 +81,7 @@ export function AppContent() {
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
         {activeTab === 'inventory' && <InventoryPage />}
         {activeTab === 'sms' && <SmsPage />}
+        {activeTab === 'reports' && <ReportsPage />}
         {activeTab === 'calendar' && (
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center py-16">
             <h2 className="text-xl font-bold text-slate-800">تقویم نوبت‌دهی سالن</h2>
