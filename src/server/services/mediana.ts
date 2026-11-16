@@ -1,5 +1,7 @@
 import { getDb } from '../db';
 import { normalizeIranianPhone } from '../../client/lib/phone';
+import { SmsProvider, SendPatternRequest, SendDirectRequest, SendResult } from './sms/types';
+import { SmsProviderRegistry } from './sms/registry';
 
 export const MEDIANA_ENDPOINTS = {
   BASE_URL: 'https://api.mediana.ir',
@@ -21,11 +23,13 @@ export interface SendDirectParams {
   dateTime?: string; // ISO format
 }
 
-export class MedianaService {
+export class MedianaService implements SmsProvider {
+  readonly name = 'mediana';
   private db: any;
 
   constructor(db?: any) {
     this.db = db || getDb();
+    SmsProviderRegistry.getInstance().register(this);
   }
 
   getConfig() {
@@ -99,6 +103,8 @@ export class MedianaService {
 
       return {
         success: true,
+        provider: 'mediana',
+        messageId: mockMsgId,
         logId,
         providerMessageId: mockMsgId,
         recipient: normalizedPhone,
@@ -145,6 +151,8 @@ export class MedianaService {
 
       return {
         success: true,
+        provider: 'mediana',
+        messageId: providerId,
         logId,
         providerMessageId: providerId,
         recipient: normalizedPhone
@@ -247,7 +255,9 @@ export class MedianaService {
 
     return {
       success: true,
+      provider: 'mediana',
       count: results.length,
+      messageId: results[0]?.providerMessageId || 'med_direct_' + Date.now(),
       recipients: results
     };
   }
