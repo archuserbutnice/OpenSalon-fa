@@ -4,7 +4,7 @@
  * Standard Iranian week: Starts on Saturday (Shanbeh), ends on Friday (Jomeh - weekend).
  */
 
-import { toPersianDigits } from './currency';
+import { toPersianDigits, toAsciiDigits } from './currency';
 
 export interface JalaliDate {
   jy: number;
@@ -16,6 +16,16 @@ export interface GregorianDate {
   gy: number;
   gm: number;
   gd: number;
+}
+
+export interface CalendarDayCell {
+  date: Date;
+  jalali: JalaliDate;
+  dayNumber: number;
+  isCurrentMonth: boolean;
+  isToday: boolean;
+  isWeekend: boolean;
+  isSelected: boolean;
 }
 
 export const JALALI_MONTH_NAMES_FA = [
@@ -102,12 +112,33 @@ export function jalaliToGregorian(jy: number, jm: number, jd: number): Gregorian
 }
 
 /**
+ * Checks whether a given Jalali year is a leap year (kabiseh)
+ */
+export function isJalaliLeapYear(jy: number): boolean {
+  // A year is a leap year if Farvardin 1 of next year is 366 days after Farvardin 1 of this year
+  const g1 = jalaliToGregorian(jy, 1, 1);
+  const g2 = jalaliToGregorian(jy + 1, 1, 1);
+  const d1 = new Date(Date.UTC(g1.gy, g1.gm - 1, g1.gd));
+  const d2 = new Date(Date.UTC(g2.gy, g2.gm - 1, g2.gd));
+  const diffDays = Math.round((d2.getTime() - d1.getTime()) / (24 * 60 * 60 * 1000));
+  return diffDays === 366;
+}
+
+/**
+ * Returns number of days in a given Jalali month (1-12)
+ */
+export function getDaysInJalaliMonth(jy: number, jm: number): number {
+  if (jm < 1 || jm > 12) throw new Error(`Invalid Jalali month: ${jm}`);
+  if (jm <= 6) return 31;
+  if (jm <= 11) return 30;
+  return isJalaliLeapYear(jy) ? 30 : 29;
+}
+
+/**
  * Returns Iranian day index (0 = Shanbeh/Saturday ... 6 = Jomeh/Friday)
  */
 export function getIranianDayOfWeek(date: Date): number {
-  // JavaScript getDay(): 0 is Sunday, 1 is Monday, ..., 6 is Saturday
-  const jsDay = date.getDay();
-  // Map: Saturday (6) -> 0, Sunday (0) -> 1, ..., Friday (5) -> 6
+  const jsDay = date.getDay(); // 0 is Sunday, 6 is Saturday
   return (jsDay + 1) % 7;
 }
 
@@ -115,7 +146,16 @@ export function getIranianDayOfWeek(date: Date): number {
  * Returns whether given date is weekend (Friday in Iran)
  */
 export function isIranianWeekend(date: Date): boolean {
-  return getIranianDayOfWeek(date) === 6; // Friday is weekend
+  return getIranianDayOfWeek(date) === 6;
+}
+
+/**
+ * Checks whether two Date objects fall on the same Jalali day
+ */
+export function isSameJalaliDay(d1: Date, d2: Date): boolean {
+  const j1 = gregorianToJalali(d1.getFullYear(), d1.getMonth() + 1, d1.getDate());
+  const j2 = gregorianToJalali(d2.getFullYear(), d2.getMonth() + 1, d2.getDate());
+  return j1.jy === j2.jy && j1.jm === j2.jm && j1.jd === j2.jd;
 }
 
 /**
@@ -139,4 +179,162 @@ export function formatJalaliFullText(date: Date, persianDigits: boolean = true):
   const dayNum = persianDigits ? toPersianDigits(j.jd) : j.jd;
   const yearNum = persianDigits ? toPersianDigits(j.jy) : j.jy;
   return `${dayName} ${dayNum} ${monthName} ${yearNum}`;
+}
+
+/**
+ * Parses a Jalali date string (e.g. "1403/08/25" or "۱۴۰۳-۰۸-۲۵") to Date object
+ */
+export function parseJalaliDate(input: string): Date | null {
+  if (!input || typeof input !== 'string') return null;
+  const ascii = toAsciiDigits(input.trim());
+  const match = ascii.match(/^(\d{4})[/-](\d{1,2})[/-](\d{1,2})$/);
+  if (!match) return null;
+
+  const jy = parseInt(match[1], 10);
+  const jm = parseInt(match[2], 10);
+  const jd = parseInt(match[3], 10);
+
+  if (jm < 1 || jm > 12) return null;
+  const maxDays = getDaysInJalaliMonth(jy, jm);
+  if (jd < 1 || jd > maxDays) return null;
+
+  const g = jalaliToGregorian(jy, jm, jd);
+  return new Date(g.gy, g.gm - 1, g.gd);
+}
+
+/**
+ * Adds or subtracts days from a Date object
+ */
+export function addJalaliDays(date: Date, days: number): Date {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+/**
+ * Adds or subtracts months from a Jalali year/month
+ */
+export function addJalaliMonths(jy: number, jm: number, count: number): { jy: number; jm: number } {
+  let totalMonths = jy * 12 + (jm - 1) + count;
+  let newYear = Math.floor(totalMonths / 12);
+  let newMonth = (totalMonths % 12) + 1;
+  return { jy: newYear, jm: newMonth };
+}
+
+/**
+ * Relative Jalali date formatting e.g. "امروز", "دیروز", "فردا", "۳ روز قبل"
+ */
+export function formatJalaliRelative(targetDate: Date, baseDate: Date = new Date(), persianDigits: boolean = true): string {
+  const t = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+  const b = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate());
+  const diffTime = t.getTime() - b.getTime();
+  const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return 'امروز';
+  if (diffDays === -1) return 'دیروز';
+  if (diffDays === 1) return 'فردا';
+  if (diffDays === 2) return 'پس‌فردا';
+
+  if (diffDays < 0) {
+    const d = Math.abs(diffDays);
+    return `${persianDigits ? toPersianDigits(d) : d} روز قبل`;
+  } else {
+    return `${persianDigits ? toPersianDigits(diffDays) : diffDays} روز بعد`;
+  }
+}
+
+/**
+ * Generates full calendar grid matrix (weeks × 7 days) for a given Jalali month
+ */
+export function getJalaliMonthGrid(jy: number, jm: number, selectedDate?: Date): CalendarDayCell[][] {
+  const daysInMonth = getDaysInJalaliMonth(jy, jm);
+  const firstDayGregorian = jalaliToGregorian(jy, jm, 1);
+  const firstDate = new Date(firstDayGregorian.gy, firstDayGregorian.gm - 1, firstDayGregorian.gd);
+  const startDayOfWeek = getIranianDayOfWeek(firstDate); // 0 (Shanbeh) .. 6 (Jomeh)
+
+  const today = new Date();
+  const grid: CalendarDayCell[][] = [];
+  let currentWeek: CalendarDayCell[] = [];
+
+  // Trailing days from previous month
+  const prevMonth = addJalaliMonths(jy, jm, -1);
+  const daysInPrevMonth = getDaysInJalaliMonth(prevMonth.jy, prevMonth.jm);
+  for (let i = startDayOfWeek - 1; i >= 0; i--) {
+    const prevJd = daysInPrevMonth - i;
+    const g = jalaliToGregorian(prevMonth.jy, prevMonth.jm, prevJd);
+    const d = new Date(g.gy, g.gm - 1, g.gd);
+    currentWeek.push({
+      date: d,
+      jalali: { jy: prevMonth.jy, jm: prevMonth.jm, jd: prevJd },
+      dayNumber: prevJd,
+      isCurrentMonth: false,
+      isToday: isSameJalaliDay(d, today),
+      isWeekend: isIranianWeekend(d),
+      isSelected: selectedDate ? isSameJalaliDay(d, selectedDate) : false
+    });
+  }
+
+  // Days of current month
+  for (let day = 1; day <= daysInMonth; day++) {
+    const g = jalaliToGregorian(jy, jm, day);
+    const d = new Date(g.gy, g.gm - 1, g.gd);
+    currentWeek.push({
+      date: d,
+      jalali: { jy, jm, jd: day },
+      dayNumber: day,
+      isCurrentMonth: true,
+      isToday: isSameJalaliDay(d, today),
+      isWeekend: isIranianWeekend(d),
+      isSelected: selectedDate ? isSameJalaliDay(d, selectedDate) : false
+    });
+
+    if (currentWeek.length === 7) {
+      grid.push(currentWeek);
+      currentWeek = [];
+    }
+  }
+
+  // Leading days of next month to complete the row
+  if (currentWeek.length > 0) {
+    const nextMonth = addJalaliMonths(jy, jm, 1);
+    let nextJd = 1;
+    while (currentWeek.length < 7) {
+      const g = jalaliToGregorian(nextMonth.jy, nextMonth.jm, nextJd);
+      const d = new Date(g.gy, g.gm - 1, g.gd);
+      currentWeek.push({
+        date: d,
+        jalali: { jy: nextMonth.jy, jm: nextMonth.jm, jd: nextJd },
+        dayNumber: nextJd,
+        isCurrentMonth: false,
+        isToday: isSameJalaliDay(d, today),
+        isWeekend: isIranianWeekend(d),
+        isSelected: selectedDate ? isSameJalaliDay(d, selectedDate) : false
+      });
+      nextJd++;
+    }
+    grid.push(currentWeek);
+  }
+
+  return grid;
+}
+
+/**
+ * Returns available appointment time slots in a day e.g. ["۰۹:۰۰", "۰۹:۳۰", ...]
+ */
+export function getDailyTimeSlots(
+  startHour: number = 9,
+  endHour: number = 20,
+  intervalMinutes: number = 30,
+  persianDigits: boolean = true
+): string[] {
+  const slots: string[] = [];
+  for (let hour = startHour; hour < endHour; hour++) {
+    for (let min = 0; min < 60; min += intervalMinutes) {
+      const hStr = String(hour).padStart(2, '0');
+      const mStr = String(min).padStart(2, '0');
+      const timeStr = `${hStr}:${mStr}`;
+      slots.push(persianDigits ? toPersianDigits(timeStr) : timeStr);
+    }
+  }
+  return slots;
 }

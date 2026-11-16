@@ -3,11 +3,12 @@ import { useState } from 'preact/hooks';
 import './index.css';
 import { AppProvider, useApp } from './context';
 import { formatJalaliFullText } from './lib/jalali';
+import { JalaliDatePicker } from './components/JalaliDatePicker';
 import { InventoryPage } from './pages/inventory';
 import { SmsPage } from './pages/sms';
 
 export function Navigation({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: (t: string) => void }) {
-  const { t, settings, updateSettings } = useApp();
+  const { t, settings, updateSettings, activeDate, setActiveDate } = useApp();
 
   return (
     <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
@@ -52,8 +53,8 @@ export function Navigation({ activeTab, setActiveTab }: { activeTab: string, set
             >
               واحد پول: {settings.displayRial ? 'ریال' : 'تومان'}
             </button>
-            <div className="text-sm font-medium text-slate-500">
-              {formatJalaliFullText(new Date())}
+            <div className="hidden sm:block">
+              <JalaliDatePicker value={activeDate} onChange={setActiveDate} />
             </div>
           </div>
         </div>
