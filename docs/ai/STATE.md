@@ -9,7 +9,7 @@
 | T05 | Jalali calendar integration & formatting utils | done | lead-agent | main | T04 | no | - |
 | T06 | Minimal authentication (owner/staff roles & sessions) | done | lead-agent | main | T02 | no | 005 |
 | T07 | Smart Inventory DB schema & backend logic | done | lead-agent | main | T03, T06 | yes | 006 |
-| T08 | Smart Inventory UI & reorder suggestions | todo | unassigned | main | T07 | no | - |
+| T08 | Smart Inventory UI & reorder suggestions | claimed | lead-agent | main | T07 | no | - |
 | T09 | SMS Provider interface & queue engine | todo | unassigned | main | T03 | yes | 007 |
 | T10 | Mediana SMS adapter implementation | todo | unassigned | main | T09 | no | - |
 | T11 | SMS delivery logs & dry-run toggle UI | todo | unassigned | main | T10 | no | - |
