@@ -1,6 +1,6 @@
 # Handoff State
 
-- **Current Task**: T11 (SMS delivery logs & dry-run toggle UI in `src/client/pages/sms.tsx`) - claimed.
+- **Current Task**: none active (T11 completed, ready for T12).
 - **What Is Done**:
   - Dev environment setup merged to `main` with runnable server & Vite dev proxies.
   - Completed **T03 (Modular API route refactoring)**.
@@ -11,8 +11,13 @@
   - Completed **T08 (Smart Inventory UI & reorder suggestions)**.
   - Completed **T09 (SMS Provider interface & queue engine, migration 007)**.
   - Completed **T10 (Mediana SMS adapter implementation)**.
-- **In Progress**:
-  - Claimed **T11**: Enhancing `src/client/pages/sms.tsx` with dry-run/sandbox toggle, live delivery logs filterable by status/phone, persistent queue monitoring & retry controls, and real-time Persian segment counting.
+  - Completed **T11 (SMS delivery logs & dry-run toggle UI)**:
+    - Built comprehensive SMS management interface in `src/client/pages/sms.tsx`.
+    - Added one-click Dry-Run / Sandbox toggle banner with instant status update via API.
+    - Added delivery logs table with mobile search, status filtering (`sent`, `failed`, `queued`), segment count, and error details.
+    - Added queue monitor view with batch process trigger and retry mechanisms.
+    - Added real-time Persian & GSM segment calculator widget for direct SMS.
+    - Verified with `tests/test_t11_sms_ui.py` (all 63 tests pass).
 - **How to run**: `npm install`, then `npm run server` and `npm run dev` in two terminals; open http://localhost:5173.
-- **Next Step**: Update `src/client/pages/sms.tsx`, write `tests/test_t11_sms_ui.py`, and verify.
+- **Next Step**: Start **T12** (Smart Reports backend aggregation).
 - **Blockers**: None.
