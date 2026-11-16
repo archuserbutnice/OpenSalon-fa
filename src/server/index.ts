@@ -1,7 +1,13 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { clientsRouter } from './routes/clients';
+import { staffRouter } from './routes/staff';
+import { servicesRouter } from './routes/services';
+import { appointmentsRouter } from './routes/appointments';
+import { productsRouter } from './routes/products';
 import { inventoryRouter } from './routes/inventory';
 import { smsRouter } from './routes/sms';
+import { settingsRouter } from './routes/settings';
 
 const app = new Hono();
 
@@ -19,8 +25,14 @@ app.get('/api/health', (c) => {
   });
 });
 
-// Mount feature routers under /api/...
+// Modular REST API routes
+app.route('/api/clients', clientsRouter);
+app.route('/api/staff', staffRouter);
+app.route('/api/services', servicesRouter);
+app.route('/api/appointments', appointmentsRouter);
+app.route('/api/products', productsRouter);
 app.route('/api/inventory', inventoryRouter);
 app.route('/api/sms', smsRouter);
+app.route('/api/settings', settingsRouter);
 
 export default app;
