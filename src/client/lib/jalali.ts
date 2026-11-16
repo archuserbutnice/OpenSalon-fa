@@ -4,6 +4,8 @@
  * Standard Iranian week: Starts on Saturday (Shanbeh), ends on Friday (Jomeh - weekend).
  */
 
+import { toPersianDigits } from './currency';
+
 export interface JalaliDate {
   jy: number;
   jm: number;
@@ -119,19 +121,22 @@ export function isIranianWeekend(date: Date): boolean {
 /**
  * Format Date object to Jalali string YYYY/MM/DD
  */
-export function formatJalaliDate(date: Date, delimiter: string = '/'): string {
+export function formatJalaliDate(date: Date, delimiter: string = '/', persianDigits: boolean = true): string {
   const j = gregorianToJalali(date.getFullYear(), date.getMonth() + 1, date.getDate());
   const mm = String(j.jm).padStart(2, '0');
   const dd = String(j.jd).padStart(2, '0');
-  return `${j.jy}${delimiter}${mm}${delimiter}${dd}`;
+  const str = `${j.jy}${delimiter}${mm}${delimiter}${dd}`;
+  return persianDigits ? toPersianDigits(str) : str;
 }
 
 /**
  * Format Date object to full Persian text e.g. "شنبه ۲۵ فروردین ۱۴۰۳"
  */
-export function formatJalaliFullText(date: Date): string {
+export function formatJalaliFullText(date: Date, persianDigits: boolean = true): string {
   const j = gregorianToJalali(date.getFullYear(), date.getMonth() + 1, date.getDate());
   const dayName = WEEKDAY_NAMES_FA[getIranianDayOfWeek(date)];
   const monthName = JALALI_MONTH_NAMES_FA[j.jm - 1];
-  return `${dayName} ${j.jd} ${monthName} ${j.jy}`;
+  const dayNum = persianDigits ? toPersianDigits(j.jd) : j.jd;
+  const yearNum = persianDigits ? toPersianDigits(j.jy) : j.jy;
+  return `${dayName} ${dayNum} ${monthName} ${yearNum}`;
 }
