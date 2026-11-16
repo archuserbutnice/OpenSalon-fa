@@ -1,0 +1,31 @@
+{
+  "name": "opensalon-fa",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Persian-first salon and appointment management system for the Iranian market",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "server": "node --loader ts-node/esm src/server/index.ts",
+    "test": "python3 tests/runner.py"
+  },
+  "dependencies": {
+    "hono": "^4.6.0",
+    "preact": "^10.24.0",
+    "preact-iso": "^2.6.0",
+    "lucide-preact": "^0.450.0",
+    "better-sqlite3": "^11.5.0",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.5.4"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.9.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
+  }
+}
