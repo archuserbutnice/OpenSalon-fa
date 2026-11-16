@@ -2,6 +2,7 @@ import { getDb } from '../db';
 import { normalizeIranianPhone } from '../../client/lib/phone';
 import { SmsProvider, SendPatternRequest, SendDirectRequest, SendResult } from './sms/types';
 import { SmsProviderRegistry } from './sms/registry';
+import { countSmsSegments } from './sms/segments';
 
 export const MEDIANA_ENDPOINTS = {
   BASE_URL: 'https://api.mediana.ir',
@@ -68,28 +69,67 @@ export class MedianaService implements SmsProvider {
     return this.getConfig();
   }
 
-  async sendPattern(params: SendPatternParams) {
+  getTemplateByCode(patternCode: string) {
+    return this.db.prepare('SELECT * FROM sms_templates WHERE pattern_code = ? AND is_active = 1').get(patternCode);
+  }
+
+  renderTemplate(patternCode: string, values: Record<string, string>): string {
+    const tpl = this.getTemplateByCode(patternCode);
+    if (!tpl || !tpl.sample_text) {
+      return JSON.stringify(values);
+    }
+
+    let rendered = tpl.sample_text;
+    for (const [key, val] of Object.entries(values)) {
+      rendered = rendered.replace(new RegExp(`%${key}%`, 'g'), val);
+      rendered = rendered.replace(new RegExp(`{${key}}`, 'g'), val);
+    }
+    return rendered;
+  }
+
+  async sendPattern(params: SendPatternParams): Promise<SendResult & { logId?: string; isSandbox?: boolean; recipient?: string; patternCode?: string }> {
     const normalizedPhone = normalizeIranianPhone(params.recipient);
     if (!normalizedPhone) {
       throw new Error(`Invalid Iranian mobile number: ${params.recipient}`);
     }
 
+    // Validate required template variables if template exists
+    const tpl = this.getTemplateByCode(params.patternCode);
+    if (tpl && tpl.required_variables) {
+      try {
+        const requiredVars: string[] = JSON.parse(tpl.required_variables);
+        for (const reqVar of requiredVars) {
+          if (params.values[reqVar] === undefined || params.values[reqVar] === null || params.values[reqVar] === '') {
+            throw new Error(`Missing required template variable '${reqVar}' for pattern '${params.patternCode}'`);
+          }
+        }
+      } catch (e: any) {
+        if (e.message.startsWith('Missing required template variable')) {
+          throw e;
+        }
+      }
+    }
+
     const config = this.getConfig();
     const originator = params.originator || config.default_originator;
     const logId = 'sms_' + Math.random().toString(36).substring(2, 10);
+    const renderedSample = this.renderTemplate(params.patternCode, params.values);
+    const segments = countSmsSegments(renderedSample).segments;
 
     // Initial log entry: queued
     this.db.prepare(`
       INSERT INTO sms_logs (
         id, recipient_phone, message_type, pattern_code, pattern_values_json,
-        originator, provider, status
-      ) VALUES (?, ?, 'pattern', ?, ?, ?, 'mediana', 'queued')
+        message_text, originator, provider, status, segments
+      ) VALUES (?, ?, 'pattern', ?, ?, ?, ?, 'mediana', 'queued', ?)
     `).run(
       logId,
       normalizedPhone,
       params.patternCode,
       JSON.stringify(params.values),
-      originator
+      renderedSample,
+      originator,
+      segments
     );
 
     // Sandbox / Mock Mode
@@ -106,7 +146,8 @@ export class MedianaService implements SmsProvider {
         provider: 'mediana',
         messageId: mockMsgId,
         logId,
-        providerMessageId: mockMsgId,
+        status: 'sent',
+        segments,
         recipient: normalizedPhone,
         patternCode: params.patternCode,
         isSandbox: true
@@ -154,8 +195,11 @@ export class MedianaService implements SmsProvider {
         provider: 'mediana',
         messageId: providerId,
         logId,
-        providerMessageId: providerId,
-        recipient: normalizedPhone
+        status: 'sent',
+        segments,
+        recipient: normalizedPhone,
+        patternCode: params.patternCode,
+        isSandbox: false
       };
     } catch (err: any) {
       this.db.prepare(`
@@ -167,7 +211,7 @@ export class MedianaService implements SmsProvider {
     }
   }
 
-  async sendDirect(params: SendDirectParams) {
+  async sendDirect(params: SendDirectParams): Promise<SendResult & { count?: number; recipients?: any[] }> {
     if (!params.recipients || params.recipients.length === 0) {
       throw new Error('At least one recipient phone number is required');
     }
@@ -183,6 +227,7 @@ export class MedianaService implements SmsProvider {
 
     const config = this.getConfig();
     const type = params.type || 'Informational';
+    const segments = countSmsSegments(params.messageText).segments;
     const results = [];
 
     for (const phone of normalizedRecipients) {
@@ -190,13 +235,14 @@ export class MedianaService implements SmsProvider {
       this.db.prepare(`
         INSERT INTO sms_logs (
           id, recipient_phone, message_type, message_text,
-          originator, provider, status
-        ) VALUES (?, ?, 'direct', ?, ?, 'mediana', 'queued')
+          originator, provider, status, segments
+        ) VALUES (?, ?, 'direct', ?, ?, 'mediana', 'queued', ?)
       `).run(
         logId,
         phone,
         params.messageText,
-        config.default_originator
+        config.default_originator,
+        segments
       );
 
       if (config.is_sandbox === 1 || !config.api_key || config.api_key === 'mediana_test_api_key_sandbox') {
@@ -256,6 +302,8 @@ export class MedianaService implements SmsProvider {
     return {
       success: true,
       provider: 'mediana',
+      status: 'sent',
+      segments,
       count: results.length,
       messageId: results[0]?.providerMessageId || 'med_direct_' + Date.now(),
       recipients: results
