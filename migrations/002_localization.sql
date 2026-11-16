@@ -18,5 +18,3 @@ INSERT OR IGNORE INTO salon_settings (key, value) VALUES
     ('display_rial', '0'),
     ('week_start_day', 'saturday'),
     ('timezone', 'Asia/Tehran');
-
-INSERT OR IGNORE INTO schema_migrations (version) VALUES ('001_initial'), ('002_localization');

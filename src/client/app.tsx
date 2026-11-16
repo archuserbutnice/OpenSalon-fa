@@ -1,4 +1,6 @@
+import { render } from 'preact';
 import { useState } from 'preact/hooks';
+import './index.css';
 import { AppProvider, useApp } from './context';
 import { formatJalaliFullText } from './lib/jalali';
 import { InventoryPage } from './pages/inventory';
@@ -87,3 +89,5 @@ export function App() {
     </AppProvider>
   );
 }
+
+render(<App />, document.getElementById('app')!);
