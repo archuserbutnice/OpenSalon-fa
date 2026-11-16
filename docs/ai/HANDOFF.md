@@ -1,12 +1,10 @@
 # Handoff State
 
-- **Current Task**: none active. Dev environment setup completed on branch `chore/dev-env-setup` (not yet merged to `main`).
+- **Current Task**: T03 (Modular API route refactoring) — CLAIMED
 - **What Is Done**:
-  - Fixed unresolvable deps (`lucide-preact` ^0.451, `better-sqlite3` ^13).
-  - Added `vite.config.ts` (Preact + `/api` proxy), `tsconfig.json`, Tailwind/PostCSS config, `src/client/index.css`, `render()` mount in `app.tsx`, `src/server/main.ts` (Hono node server).
-  - Fixed `002_localization.sql` self-registering in `schema_migrations` (crashed server on fresh DB); test helper now mirrors the TS runner.
-  - Reconciled `STATE.md` with existing code; planned migrations renumbered from 005.
-  - Verified: `python tests/runner.py` (16 OK), `/api/health` + proxied `/api/*`, UI renders RTL in browser.
+  - Dev environment setup merged to `main` with runnable server & Vite dev proxies.
+  - Reconciled `STATE.md` with baseline schema & existing codebase.
+  - Claimed T03 to build and modularize core REST routes under `/api/...`.
 - **How to run**: `npm install`, then `npm run server` and `npm run dev` in two terminals; open http://localhost:5173.
-- **Next Step**: Merge `chore/dev-env-setup` into `main`, then start **T03** (Modular API route refactoring).
+- **Next Step**: Implement modular API routers for `clients`, `staff`, `services`, `appointments`, `products`, `settings` in `src/server/routes/`, mount in `src/server/index.ts`, and test with verification suite.
 - **Blockers**: None.
