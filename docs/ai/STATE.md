@@ -13,7 +13,7 @@
 | T09 | SMS Provider interface & queue engine | done | lead-agent | main | T03 | yes | 007 |
 | T10 | Mediana SMS adapter implementation | done | lead-agent | main | T09 | no | - |
 | T11 | SMS delivery logs & dry-run toggle UI | done | lead-agent | main | T10 | no | - |
-| T12 | Smart Reports backend aggregation | claimed | lead-agent | main | T03, T06 | yes | - |
+| T12 | Smart Reports backend aggregation | done | lead-agent | main | T03, T06 | yes | - |
 | T13 | Smart Reports dashboard widgets & CSV export | todo | unassigned | main | T12 | no | - |
 | T14 | Customer profiles extension schema & backend | todo | unassigned | main | T03, T06 | yes | 008 |
 | T15 | Customer profiles UI & visit timeline | todo | unassigned | main | T14 | no | - |

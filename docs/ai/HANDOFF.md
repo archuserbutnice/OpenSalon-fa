@@ -1,6 +1,6 @@
 # Handoff State
 
-- **Current Task**: T12 (Smart Reports backend aggregation) - claimed.
+- **Current Task**: none active (T12 completed, ready for T13).
 - **What Is Done**:
   - Dev environment setup merged to `main` with runnable server & Vite dev proxies.
   - Completed **T03 (Modular API route refactoring)**.
@@ -12,8 +12,10 @@
   - Completed **T09 (SMS Provider interface & queue engine, migration 007)**.
   - Completed **T10 (Mediana SMS adapter implementation)**.
   - Completed **T11 (SMS delivery logs & dry-run toggle UI)**.
-- **In Progress**:
-  - Claimed **T12**: Implementing `ReportsService` in `src/server/services/reports.ts`, REST routes in `src/server/routes/reports.ts`, mounting under `/api/reports`, and test verification.
+  - Completed **T12 (Smart Reports backend aggregation)**:
+    - Implemented `ReportsService` in `src/server/services/reports.ts` with comprehensive salon metrics: revenue aggregation, completion / cancel / no-show rates, new vs returning client retention, top clients ranking, busiest hours heatmap, date-range filtering, and UTF-8 BOM CSV generator.
+    - Mounted modular routes under `/api/reports/...` in `src/server/routes/reports.ts` and `src/server/index.ts`.
+    - Verified with `tests/test_t12_smart_reports.py` (all 70 tests pass).
 - **How to run**: `npm install`, then `npm run server` and `npm run dev` in two terminals; open http://localhost:5173.
-- **Next Step**: Implement reports aggregation service, routes, test suite, and verify.
+- **Next Step**: Start **T13** (Smart Reports dashboard widgets & CSV export in `src/client/pages/reports.tsx`).
 - **Blockers**: None.
