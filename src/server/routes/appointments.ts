@@ -1,7 +1,9 @@
 import { Hono } from 'hono';
 import { getDb } from '../db';
+import { InventoryService } from '../services/inventory';
 
 export const appointmentsRouter = new Hono();
+const inventoryService = new InventoryService();
 
 appointmentsRouter.get('/', (c) => {
   const db = getDb();
@@ -98,6 +100,14 @@ appointmentsRouter.post('/', async (c) => {
       body.notes || null
     );
 
+    if (status === 'completed') {
+      try {
+        inventoryService.processAppointmentConsumption(id);
+      } catch (e) {
+        console.error('Failed to process auto-decrement inventory on create:', e);
+      }
+    }
+
     const created = db.prepare(`
       SELECT 
         a.*,
@@ -164,6 +174,14 @@ appointmentsRouter.put('/:id', async (c) => {
       SET staff_id = ?, service_id = ?, start_time = ?, end_time = ?, status = ?, price_toman = ?, notes = ?
       WHERE id = ?
     `).run(staffId, serviceId, startTime, endTime, status, price, notes, id);
+
+    if (status === 'completed' && existing.status !== 'completed') {
+      try {
+        inventoryService.processAppointmentConsumption(id);
+      } catch (e) {
+        console.error('Failed to process auto-decrement inventory on complete:', e);
+      }
+    }
 
     const updated = db.prepare(`
       SELECT 
