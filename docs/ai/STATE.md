@@ -1,15 +1,15 @@
 # STATE.md — Project Task Matrix & Status Tracking
 
 ## Active Task
-- Current active task: None (T03 completed, ready to claim T04)
+- Current active task: T04 (SMS Layer / Mediana)
 
 ## Task Matrix
 | Task ID | Feature Name | Description | Status | Blockers | Commits |
 |---|---|---|---|---|---|
 | T01 | Project Scaffolding | OpenSalon fork baseline, package structure, SQLite db runner | done | None | Initial |
 | T02 | Persian Localization Core | RTL, local Vazirmatn fonts, Jalali calendar, Toman currency, phone normalizer, i18n | done | None | Initial |
-| T03 | Inventory Management | Stock tracking, low-stock alerts, transactions ledger, suppliers, /api/inventory | done | None | 05bf40a |
-| T04 | SMS Layer / Mediana | Mediana API integration, pattern & direct sends, logs, /api/sms | todo | None | Pending |
+| T03 | Inventory Management | Stock tracking, low-stock alerts, transactions ledger, suppliers, /api/inventory | done | None | 05bf40a, 34a861a |
+| T04 | SMS Layer / Mediana | Mediana API integration, pattern & direct sends, logs, /api/sms | claimed | None | Pending |
 | T05 | Reports & Analytics | Revenue, staff performance, service stats | todo | T01, T03 | Pending |
 | T06 | Customer Profiles | Visit history, client preferences, notes | todo | T01 | Pending |
 | T07 | Automated SMS Triggers | Booking confirmation & reminder SMS | todo | T04, T06 | Pending |
