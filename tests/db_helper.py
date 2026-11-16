@@ -29,5 +29,5 @@ def run_migrations(conn, migrations_dir="migrations"):
             with open(filepath, "r", encoding="utf-8") as f:
                 sql = f.read()
             cur.executescript(sql)
-            cur.execute("INSERT OR IGNORE INTO schema_migrations (version) VALUES (?)", (version,))
+            cur.execute("INSERT INTO schema_migrations (version) VALUES (?)", (version,))
             conn.commit()
